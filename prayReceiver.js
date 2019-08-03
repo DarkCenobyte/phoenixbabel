@@ -1,4 +1,4 @@
-const prayReceiver = require('./prayResponder.js');
+const prayResponder = require('./prayResponder.js');
 
 const PROTOCOL_NET_LINE_REQ = 'NET: LINE_REQ';
 const PROTOCOL_NET_ULIN = 'NET: ULIN';
@@ -106,7 +106,6 @@ async function transmit(payload, socket) {
   );
 
   if ((res.payload || '').length > 0) {
-    console.log('ToRespond', res.payload);
     prayResponder.respond(res.payload, socket);
   }
 }

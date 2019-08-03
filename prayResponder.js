@@ -8,11 +8,12 @@ const PROTOCOL_UNKNOWN = 'UNKNOWN: UNKNOWN';
 const PROTOCOL_EMPTY = 'EMPTY: EMPTY';
 
 function buildPayload(payload) {
-
+  console.info('beforeBuilding', payload);
 }
 
 function respond(payload, socket) {
   const bufPayload = buildPayload(payload);
+  // socket.write(bufPayload);
 }
 
 module.exports = {

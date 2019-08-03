@@ -2,17 +2,12 @@ const apiRoutes = [
   {
     method: 'GET',
     path: '/',
-    handler: (request, h) => {
-      return 'Hello World!';
-    }
+    handler: redirect
   },
   {
     method: 'POST',
     path: '/login',
-    handler: (request, h) => {
-      //console.log('ApiRoute/Login', request, h);
-      return 'Hello World!';
-    }
+    handler: redirect
   }
 ];
 
@@ -20,11 +15,17 @@ const webRoutes = [
   {
     method: 'GET',
     path: '/',
-    handler: (request, h) => {
-      return '<h1>Hello World!</h1>';
-    }
+    handler: redirect
   }
 ];
+
+function redirect(request, h) {
+  const actionPath = request.route.path.slice(-1) === '/' ?
+    `${request.route.path}index.js` :
+    `${request.route.path}.js`
+  ;
+  return require(`./controller/${request.route.settings.isInternal ? 'api' : 'web'}${actionPath}`)(request.payload, h);
+}
 
 function loadApiRoutes() {
   for (let route of apiRoutes) {
