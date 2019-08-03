@@ -1,6 +1,8 @@
 const prayResponder = require('./prayResponder.js');
+const { isSameArray } = require('./utils.js');
 
 const PROTOCOL_NET_LINE_REQ = 'NET: LINE_REQ';
+const PROTOCOL_CONTROL = 'NET: CONTROL'; //0x10
 const PROTOCOL_NET_ULIN = 'NET: ULIN';
 const PROTOCOL_NET_STAT = 'NET: STAT';
 const PROTOCOL_NET_RUSO = 'NET: RUSO';
@@ -13,16 +15,6 @@ function isPray() {
   // TODO
 }
 
-function isSameArray(src, trg) {
-  if (src.length !== trg.length)
-    return false;
-  return src.every(
-    (v, i) => {
-      return v === trg[i];
-    }
-  );
-}
-
 function identifyNetBabelType(data) {
   if (data.length === 0) {
     console.log(PROTOCOL_EMPTY);
@@ -32,6 +24,9 @@ function identifyNetBabelType(data) {
   if (isSameArray(head.data, [0x25, 0x00, 0x00, 0x00])) {
     console.log(PROTOCOL_NET_LINE_REQ);
     return PROTOCOL_NET_LINE_REQ;
+  } else if (isSameArray(head.data, [0x10, 0x00, 0x00, 0x00])) {
+    console.log(PROTOCOL_CONTROL);
+    return PROTOCOL_CONTROL;
   } else if (isSameArray(head.data, [0x13, 0x00, 0x00, 0x00])) {
     console.log(PROTOCOL_NET_ULIN);
     return PROTOCOL_NET_ULIN;
@@ -69,18 +64,27 @@ function parsePayload(payload) {
       break;
     case PROTOCOL_NET_UNIK:
       // TODO
+      return null;
       break;
     case PROTOCOL_NET_ULIN:
       // TODO
+      return null;
       break;
     case PROTOCOL_NET_STAT:
       // TODO
+      return null;
       break;
     case PROTOCOL_NET_RUSO:
       // TODO
+      return null;
       break;
     case PROTOCOL_PRAY:
       // TODO
+      return null;
+      break;
+    case PROTOCOL_CONTROL:
+      // TODO
+      return null;
       break;
     default:
       console.error('Should not be here...', payload.type);
@@ -106,7 +110,8 @@ async function transmit(payload, socket) {
   );
 
   if ((res.payload || '').length > 0) {
-    prayResponder.respond(res.payload, socket);
+    prayResponder.respond(JSON.parse(res.payload), socket);
+    socket.end();
   }
 }
 
@@ -119,13 +124,17 @@ function processNetBabelPacket(data) {
     payload.data = parsePayload(payload);
     return payload.data;
   }
+  socket.end();
   return null;
 }
 
 function init() {
+  // console.log(process.PhoenixBabel.gameServer.listener);
+  // process.exit(1);
   process.PhoenixBabel.gameServer.listener.on(
     'connection',
     (socket) => {
+      socket.setKeepAlive(true);
       socket.on(
         'close',
         () => {
@@ -136,13 +145,13 @@ function init() {
       socket.on(
         'data',
         async (data) => {
-          let payload = processNetBabelPacket(data);
+          const payload = processNetBabelPacket(data, socket);
           if (payload !== null) {
             await transmit(payload, socket);
           }
         }
       );
-      socket.on(
+      socket.once(
         'end',
         () => {
           if (process.PhoenixBabel.debug === true)
@@ -153,6 +162,7 @@ function init() {
         'error',
         (err) => {
           console.error('ERROR SOCKET', err);
+          socket.end();
         }
       );
     }
