@@ -1,0 +1,18 @@
+{
+  "name": "phoenixbabel",
+  "version": "1.0.0",
+  "description": "A nodejs DockingStation server",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "DarkCenobyte",
+  "license": "MIT",
+  "dependencies": {
+    "@hapi/hapi": "^18.3.1",
+    "@hapi/inert": "^5.2.1",
+    "@hapi/shot": "^4.1.0",
+    "@hapi/vision": "^5.5.2",
+    "mysql": "^2.17.1"
+  }
+}
