@@ -1,4 +1,5 @@
-const {bufferize} = require('../../utils.js');
+const {bufferize, dbQuery} = require('../../utils.js');
+const {randomBytes} = require('crypto');
 
 const SERVER_ID = 1;
 const SERVER_PORT = process.PhoenixBabel.gameServer.info.port;
@@ -8,10 +9,29 @@ module.exports = async function (request, h) {
   console.log('Login Request');
 
   // CHECK IDENTITY HERE
+  const user = await dbQuery(`
+    SELECT id
+    FROM users
+    WHERE username = ? AND gamepassword = ?
+    LIMIT 1;
+    `,
+    [request.user, request.pass]
+  );
+  if (user.length === 0) {
+    // invalid username or password
+    return {
+      head: 'NET_LINE_REP',
+      sessionToken: [...bufferize(0x00, 8)],
+      userId: 0,
+      body: [
+        ...bufferize(0x00, 12)
+      ]
+    };
+  }
 
-  // if valid:
-  const sessionToken = [0x66, 0x60, 0x01, 0x01, 0x1, 0x01, 0x01, 0x01]; // make random
-  const userId = 1; // get from db
+  // currently this random sessionToken is not stored
+  const sessionToken = [...randomBytes(8)];
+  const userId = user[0].id; // get from db
   return {
     head: 'NET_LINE_REP',
     sessionToken: sessionToken,

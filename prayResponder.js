@@ -39,7 +39,7 @@ function respond(payload, socket) {
     throw new Exception('Invalid output payload, missing head attribute.');
   }
   const bufPayload = buildPayload(payload);
-  //console.log(bufPayload);
+  //console.log([...bufPayload]);
   socket.write(bufPayload);
 }
 

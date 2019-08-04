@@ -1,3 +1,5 @@
+const {format} = require('mysql');
+
 function bufferize(value, size = null) {
   if (
     [
@@ -36,8 +38,27 @@ function isSameArray(src, trg) {
   );
 }
 
+function dbQuery(query, parameters = []) {
+  if (parameters.length > 0) {
+    query = format(query, parameters);
+  }
+  return new Promise(
+    (resolve, reject) => {
+      process.PhoenixBabel.db.query(
+        query,
+        (error, results, fields) => {
+          if (error)
+            reject(error);
+          resolve(results);
+        }
+      );
+    }
+  );
+}
+
 module.exports = {
   bufferize,
   hexArray,
-  isSameArray
+  isSameArray,
+  dbQuery
 }
