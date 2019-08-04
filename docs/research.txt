@@ -1,0 +1,19 @@
+control:
+client connect
+server give it session = 40 52 4b 28 eb 00 '@RK('
+client sent 13 with session = 40 52 4b 28 eb 00 '@RK('
+server answer 13 with session empty
+
+client sent 0f with session = 40 52 4b 28 eb 00 '@RK('
+server answer 0f with session = 40 52 4b 28 eb 00 '@RK(' -- payload with UserName/RealName? (guessing someone add the player as contact)
+server still answer 09 without session, seems to contains PRAY format
+
+client sent 10 with session = 40 52 4b 28 eb 00 '@RK('
+server answer 0d without session ? -- payload with UserName/RealName?
+
+
+client sent 13 with session = 40 52 4b 28 eb 00 '@RK('
+server answer 13 with session d9 20 71 60 00 00
+
+client sent 10 with session = 40 52 4b 28 eb 00 '@RK('
+server answer 0d without session ? -- payload with UserName/RealName?
