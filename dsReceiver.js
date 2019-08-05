@@ -1,4 +1,4 @@
-const prayResponder = require('./prayResponder.js');
+const dsResponder = require('./dsResponder.js');
 const { isSameArray } = require('./utils.js');
 
 const PROTOCOL_NET_LINE_REQ = 'NET: LINE_REQ';
@@ -118,7 +118,7 @@ async function transmit(payload, socket) {
   );
 
   if ((res.payload || '').length > 0) {
-    prayResponder.respond(JSON.parse(res.payload), socket);
+    dsResponder.respond(JSON.parse(res.payload), socket);
   }
 }
 

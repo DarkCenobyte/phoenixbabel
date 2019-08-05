@@ -22,7 +22,7 @@ const init = async () => {
 
   await require('./serverModules.js').init();
   await require('./db/mysql.js').init(serverConfig.db);
-  await require('./prayReceiver.js').init();
+  await require('./dsReceiver.js').init();
   require('./routes.js').loadApiRoutes();
   require('./routes.js').loadWebRoutes();
 
